@@ -290,6 +290,94 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Tokenomics Section */}
+      <section className="py-32 px-8 relative overflow-hidden border-t border-white/5 bg-[#050505]">
+        <div className="absolute left-1/2 -top-40 -translate-x-1/2 w-[800px] h-[400px] bg-brand-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="mb-20 text-center space-y-4">
+            <p className="text-brand-primary text-[10px] font-black uppercase tracking-[0.4em]">Ecosystem Distribution</p>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight">TOKENOMICS <span className="text-gray-500 italic">ARCHITECTURE</span></h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg mt-4">A comprehensive visualization of NAORIS token allocation and distribution, engineered for long-term protocol sustainability.</p>
+          </div>
+          
+          <div className="relative group mx-auto max-w-5xl flex justify-center">
+            <div className="absolute -inset-1 bg-gradient-to-r from-brand-primary/20 via-blue-500/20 to-brand-primary/20 rounded-[3rem] blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-1000" />
+            <div className="relative bg-[#0a0a0a]/80 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-6 shadow-2xl w-full">
+              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-[2.5rem] pointer-events-none" />
+              <img
+                src="/naoris_tokenomics.png"
+                alt="NAORIS Tokenomics Distribution"
+                className="w-full h-auto rounded-[1.5rem] relative z-10 shadow-[0_0_50px_rgba(0,0,0,0.3)] transition-transform duration-700 group-hover:scale-[1.01]"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </div>
+
+          <div className="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-5xl mx-auto">
+            {/* Key Details */}
+            <div className="space-y-8">
+              <h3 className="text-2xl font-black tracking-tight">KEY <span className="text-brand-primary italic">DETAILS</span></h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="col-span-1 sm:col-span-2 p-6 bg-white/5 border border-white/10 rounded-2xl hover:border-brand-primary/30 transition-colors">
+                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Maximum Supply</p>
+                  <p className="text-3xl font-black text-white">4,000,000,000 <span className="text-brand-primary text-xl">$NAORIS</span></p>
+                </div>
+                <div className="col-span-1 sm:col-span-2 p-6 bg-white/5 border border-white/10 rounded-2xl hover:border-brand-primary/30 transition-colors">
+                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Circulating Supply (TGE)</p>
+                  <p className="text-3xl font-black text-white">442,180,000 <span className="text-brand-primary text-xl">tokens</span></p>
+                </div>
+                <div className="p-6 bg-white/5 border border-white/10 rounded-2xl hover:border-brand-primary/30 transition-colors">
+                  <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-2">Public Sale & Airdrop</p>
+                  <p className="text-lg font-bold text-gray-300">100% unlocked at TGE</p>
+                </div>
+                <div className="p-6 bg-brand-primary/10 border border-brand-primary/20 rounded-2xl">
+                  <p className="text-brand-primary text-[10px] font-black uppercase tracking-widest mb-2">Consensus Mechanism</p>
+                  <p className="text-lg font-bold text-white mb-1">dPoSec</p>
+                  <p className="text-[11px] text-gray-400 font-medium leading-snug">Enabling real-time, on-chain device validations</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Unlock Schedules */}
+            <div className="space-y-8">
+              <h3 className="text-2xl font-black tracking-tight">UNLOCK <span className="text-gray-500 italic">SCHEDULES</span></h3>
+              <div className="p-8 bg-[#0a0a0a] border border-white/10 rounded-3xl shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/10 blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <p className="text-gray-400 text-sm leading-relaxed font-medium mb-10 relative z-10">
+                  The $NAORIS token has a carefully designed unlock schedule to protect the market from oversupply and speculative dumping:
+                </p>
+                <div className="space-y-8 relative before:absolute before:inset-y-2 before:left-[11px] before:w-[2px] before:bg-white/10 pl-10 z-10">
+                  <div className="relative">
+                    <div className="absolute -left-10 top-0.5 w-[24px] h-[24px] bg-emerald-500/20 border border-emerald-500/50 rounded-full flex items-center justify-center z-10">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
+                    </div>
+                    <h4 className="text-base font-black text-white mb-1.5 uppercase tracking-wide">Public Sale & Airdrop</h4>
+                    <p className="text-xs text-gray-400 font-medium leading-relaxed">100% unlocked at TGE to encourage immediate participation and decentralization.</p>
+                  </div>
+                  
+                  <div className="relative">
+                    <div className="absolute -left-10 top-0.5 w-[24px] h-[24px] bg-blue-500/20 border border-blue-500/50 rounded-full flex items-center justify-center z-10">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                    </div>
+                    <h4 className="text-base font-black text-white mb-1.5 uppercase tracking-wide">12-Month Unlock</h4>
+                    <p className="text-xs text-gray-400 font-medium leading-relaxed">Gradual release of team, early backer, and ecosystem tokens.</p>
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute -left-10 top-0.5 w-[24px] h-[24px] bg-purple-500/20 border border-purple-500/50 rounded-full flex items-center justify-center z-10">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+                    </div>
+                    <h4 className="text-base font-black text-white mb-1.5 uppercase tracking-wide">5-Year Unlock</h4>
+                    <p className="text-xs text-gray-400 font-medium leading-relaxed">A long-term vesting plan stretching until 2030, ensuring ongoing commitment from key stakeholders.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Advantage Banner */}
       <section id="advantages" className="px-8 pb-32">
         <div className="max-w-6xl mx-auto rounded-[3rem] bg-gradient-to-br from-[#0a0a0a] to-[#050505] border border-white/10 p-16 md:p-24 relative overflow-hidden text-center">
