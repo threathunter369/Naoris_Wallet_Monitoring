@@ -17,6 +17,10 @@ import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 import { DottedSurface } from '../components/ui/dotted-surface';
 
+// Import images directly to ensure Vite resolves them properly
+import tokenControlImg from '/public/naoris_token_control.png';
+import tokenomicsImg from '/public/naoris_tokenomics.png';
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -276,10 +280,9 @@ export default function Home() {
               <div className="relative group">
                 <div className="absolute -inset-px bg-gradient-to-br from-brand-primary to-transparent opacity-20 group-hover:opacity-40 transition-opacity blur-sm rounded-3xl" />
                 <img
-                  src="/naoris_token_control.png"
+                  src={tokenControlImg}
                   alt="NAORIS Token Control Structure"
                   className="w-full h-auto rounded-3xl shadow-2xl relative z-10 hover:shadow-brand-primary/20 transition-all duration-700"
-                  referrerPolicy="no-referrer"
                 />
                 {/* Digital pulse nodes on top of placeholder */}
                 <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-brand-primary rounded-full animate-ping z-20" />
@@ -306,10 +309,9 @@ export default function Home() {
             <div className="relative bg-[#0a0a0a]/80 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-6 shadow-2xl w-full">
               <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-[2.5rem] pointer-events-none" />
               <img
-                src="/naoris_tokenomics.png"
+                src={tokenomicsImg}
                 alt="NAORIS Tokenomics Distribution"
                 className="w-full h-auto rounded-[1.5rem] relative z-10 shadow-[0_0_50px_rgba(0,0,0,0.3)] transition-transform duration-700 group-hover:scale-[1.01]"
-                referrerPolicy="no-referrer"
               />
             </div>
           </div>
