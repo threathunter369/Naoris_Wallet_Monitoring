@@ -21,6 +21,8 @@ export default function Layout() {
   const [displayName, setDisplayName] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [authSuccess, setAuthSuccess] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleGoogleLogin = async () => {
     setAuthError(null);
@@ -33,15 +35,26 @@ export default function Layout() {
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setAuthSuccess(null);
+    setIsSubmitting(true);
     try {
       if (isRegister) {
         const { error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: displayName } } });
         if (error) throw error;
+        setAuthSuccess('REGISTRATION SUCCESSFUL: PLEASE CHECK YOUR EMAIL TO VERIFY YOUR ACCOUNT.');
+        setEmail('');
+        setPassword('');
+        setDisplayName('');
+        setIsRegister(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-    } catch (err: any) { setAuthError(err.message); }
+    } catch (err: any) { 
+      setAuthError(err.message); 
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) return (<div className="min-h-screen flex items-center justify-center bg-brand-bg"><Radar className="w-12 h-12 text-brand-primary animate-spin" /></div>);
@@ -77,13 +90,21 @@ export default function Layout() {
                   <div className="relative group"><input type="email" placeholder="SECURE EMAIL" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-[11px] text-brand-primary placeholder:text-gray-600 focus:outline-none focus:border-brand-primary transition-all font-mono" required /></div>
                   <div className="relative group"><input type="password" placeholder="ACCESS KEY" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-[11px] text-brand-primary placeholder:text-gray-600 focus:outline-none focus:border-brand-primary transition-all font-mono" required /></div>
                   {authError && (<div className="space-y-2"><p className="text-[10px] text-red-500 font-bold uppercase tracking-tight text-left pl-1">{authError.includes('Invalid login') ? 'ACCESS DENIED: INVALID CREDENTIALS' : authError.includes('Email not confirmed') ? 'PENDING: CHECK EMAIL TO CONFIRM' : `ERROR: ${authError.toUpperCase()}`}</p></div>)}
-                  <button type="submit" className="w-full bg-brand-primary text-black py-3 rounded-xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-[0_5px_15px_rgba(16,185,129,0.2)] active:scale-[0.98] border-b-4 border-emerald-700">{isRegister ? 'Register Signature' : 'Decrypt Session'}</button>
+                  {authSuccess && (<div className="space-y-2"><p className="text-[10px] text-brand-primary font-bold uppercase tracking-tight text-left pl-1">{authSuccess}</p></div>)}
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-brand-primary text-black py-3 rounded-xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-emerald-400 transition-all shadow-[0_5px_15px_rgba(16,185,129,0.2)] active:scale-[0.98] border-b-4 border-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isSubmitting ? 'PROCESSING...' : (isRegister ? 'Register Signature' : 'Decrypt Session')}
+                  </button>
                 </form>
                 <div className="relative flex items-center gap-3"><div className="flex-1 h-px bg-white/5" /><span className="text-[9px] text-gray-600 font-bold tracking-widest uppercase">Encryption Mesh</span><div className="flex-1 h-px bg-white/5" /></div>
                 <button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-3 bg-white/5 text-gray-300 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all border border-white/5 group relative overflow-hidden">
                   <img src="https://www.google.com/favicon.ico" className="w-3 h-3 grayscale group-hover:grayscale-0 transition-all" alt="G" /><span>Google SSO Payload</span>
                 </button>
-                <p className="text-[10px] text-gray-500 pt-2">{isRegister ? 'Already verified? ' : 'Awaiting identification? '}<button onClick={() => setIsRegister(!isRegister)} className="text-brand-primary font-bold hover:underline underline-offset-4">{isRegister ? 'INITIATE LOGIN' : 'REQUEST ADMISSION'}</button></p>
+                <p className="text-[10px] text-gray-500 pt-2">
+                  {isRegister ? 'Already verified? ' : 'Awaiting identification? '}
+                  <button type="button" onClick={() => { setIsRegister(!isRegister); setAuthError(null); setAuthSuccess(null); }} className="text-brand-primary font-bold hover:underline underline-offset-4">
+                    {isRegister ? 'INITIATE LOGIN' : 'REQUEST ADMISSION'}
+                  </button>
+                </p>
               </div>
             </div>
           </div>
