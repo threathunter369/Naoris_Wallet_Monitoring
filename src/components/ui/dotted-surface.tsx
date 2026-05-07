@@ -16,7 +16,14 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 	} | null>(null);
 
 	useEffect(() => {
-		if (!containerRef.current) return;
+		const currentContainer = containerRef.current;
+		if (!currentContainer) return;
+
+		// Clear any existing canvases (handles React Strict Mode double-invocations perfectly)
+		// This prevents a static 'ghost' canvas from overlapping the active animating one.
+		while (currentContainer.firstChild) {
+			currentContainer.removeChild(currentContainer.firstChild);
+		}
 
 		const SEPARATION = 150;
 		const AMOUNTX = 40;
@@ -42,13 +49,12 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.setClearColor(0x000000, 0);
 
-		containerRef.current.appendChild(renderer.domElement);
+		currentContainer.appendChild(renderer.domElement);
 
 		// Create particles
 		const positions: number[] = [];
 		const colors: number[] = [];
 
-		// Create geometry for all particles
 		const geometry = new THREE.BufferGeometry();
 
 		for (let ix = 0; ix < AMOUNTX; ix++) {
@@ -58,15 +64,15 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 				const z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2;
 
 				positions.push(x, y, z);
-                // Using a faint green color to match Naoris brand
-				colors.push(0, 255, 65);
+				// Using a faint green color to match Naoris brand, normalized to 0-1
+				colors.push(0, 1, 65 / 255);
 			}
 		}
 
-		geometry.setAttribute(
-			'position',
-			new THREE.Float32BufferAttribute(positions, 3),
-		);
+		const positionAttribute = new THREE.Float32BufferAttribute(positions, 3);
+		positionAttribute.setUsage(THREE.DynamicDrawUsage);
+		geometry.setAttribute('position', positionAttribute);
+		
 		geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 		// Create material
@@ -82,15 +88,19 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		const points = new THREE.Points(geometry, material);
 		scene.add(points);
 
-		let count = 0;
 		let animationId: number;
+		const clock = new THREE.Clock();
 
 		// Animation function
 		const animate = () => {
 			animationId = requestAnimationFrame(animate);
 
-			const positionAttribute = geometry.attributes.position;
-			const positions = positionAttribute.array as Float32Array;
+			const elapsedTime = clock.getElapsedTime();
+			// Multiply by 6 to match original speed (0.1 per frame at 60fps = 6 per second)
+			const count = elapsedTime * 6;
+
+			const posAttr = geometry.attributes.position as THREE.BufferAttribute;
+			const positionsArray = posAttr.array as Float32Array;
 
 			let i = 0;
 			for (let ix = 0; ix < AMOUNTX; ix++) {
@@ -98,7 +108,7 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 					const index = i * 3;
 
 					// Animate Y position with sine waves
-					positions[index + 1] =
+					positionsArray[index + 1] =
 						Math.sin((ix + count) * 0.3) * 50 +
 						Math.sin((iy + count) * 0.5) * 50;
 
@@ -106,10 +116,8 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 				}
 			}
 
-			positionAttribute.needsUpdate = true;
-
+			posAttr.needsUpdate = true;
 			renderer.render(scene, camera);
-			count += 0.1;
 		};
 
 		// Handle window resize
@@ -124,41 +132,28 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		// Start animation
 		animate();
 
-		// Store references
-		sceneRef.current = {
-			scene,
-			camera,
-			renderer,
-			particles: [points],
-			animationId,
-			count,
-		};
-
 		// Cleanup function
 		return () => {
 			window.removeEventListener('resize', handleResize);
+			cancelAnimationFrame(animationId);
 
-			if (sceneRef.current) {
-				cancelAnimationFrame(sceneRef.current.animationId);
-
-				// Clean up Three.js objects
-				sceneRef.current.scene.traverse((object) => {
-					if (object instanceof THREE.Points) {
-						object.geometry.dispose();
-						if (Array.isArray(object.material)) {
-							object.material.forEach((material) => material.dispose());
-						} else {
-							object.material.dispose();
-						}
+			// Clean up Three.js objects
+			scene.traverse((object) => {
+				if (object instanceof THREE.Points) {
+					object.geometry.dispose();
+					if (Array.isArray(object.material)) {
+						object.material.forEach((material) => material.dispose());
+					} else {
+						object.material.dispose();
 					}
-				});
+				}
+			});
 
-				sceneRef.current.renderer.dispose();
+			renderer.dispose();
 
-				if (containerRef.current && sceneRef.current.renderer.domElement) {
-					containerRef.current.removeChild(
-						sceneRef.current.renderer.domElement,
-					);
+			if (currentContainer && renderer.domElement) {
+				if (currentContainer.contains(renderer.domElement)) {
+					currentContainer.removeChild(renderer.domElement);
 				}
 			}
 		};
